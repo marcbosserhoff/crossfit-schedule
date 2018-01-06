@@ -1,10 +1,47 @@
 #!/usr/bin/python
 
-from ics import Calendar, Event
 import argparse
 import yaml
 import sys
 import datetime
+
+one_day = datetime.timedelta(days=1)
+now_str = datetime.datetime.now().strftime("%Y%m%dT%H:%M:%SZ")
+
+def calendar_header():
+    header  = "BEGIN:VCALENDAR\n"
+    header += "PRODID:Marc's Crossfit Calendar\n"
+    header += "VERSION:2.0\n"
+    header += "CALSCALE:GREGORIAN\n"
+    header += "METHOD:PUBLISH\n"
+    header += "X-WR-CALNAME:CrossFit\n"
+    header += "X-WR-TIMEZONE:Europe / Berlin\n"
+    header += "X-WR-CALDESC:Klasseninhalte von CrossFit - Cologne\n"
+    return header
+
+
+def calendar_footer():
+    footer = "END:VCALENDAR"
+    return footer
+
+
+def calendar_event(day, title, location):
+    current_day_str = day.strftime("%Y%m%d")
+    next_day_str = (day + one_day).strftime("%Y%m%d")
+    event = "BEGIN:VEVENT\n"
+    event += "DTSTART;VALUE = DATE:%s\n" % current_day_str
+    event += "DTEND;VALUE = DATE:%s\n" % next_day_str
+    event += "DTSTAMP:%s\n" % now_str
+    event += "CREATED:%s\n" % now_str
+    event += "DESCRIPTION:%s\n" % title
+    event += "LAST-MODIFIED:%s\n" % now_str
+    event += "LOCATION:%s\n" % location
+    event += "SEQUENCE:0\n"
+    event += "STATUS:CONFIRMED\n"
+    event += "SUMMARY:%s\n" % title
+    event += "TRANSP:TRANSPARENT\n"
+    event += "END:VEVENT\n"
+    return event
 
 
 def load_workouts():
@@ -51,15 +88,6 @@ def generate_weekly_workouts(workout_titles, start_workout, week_count, directio
     return result
 
 
-def create_event(day, title, location):
-    e = Event()
-    e.name = title
-    e.location = location
-    e.begin = day.strftime("%y%m%d 00:00:00")
-    e.make_all_day()
-    return e
-
-
 def create_title(workout):
     return "/".join(workout)
 
@@ -68,16 +96,11 @@ def get_week_of_year(date):
     return int(date.strftime("%V"))
 
 
-def get_day_of_week(date):
-    return int(date.strftime("%V"))
-
-
 def calculate_calendar(workouts, start_workout, start_date, end_date):
     workout_titles = workout_title_array(workouts)
     week_count = 0
-    one_day = datetime.timedelta(days=1)
     location = workouts["location"]
-    c = Calendar()
+    calendar = calendar_header()
 
     current_titles = generate_weekly_workouts(workout_titles, start_workout, week_count)
     current_date = start_date
@@ -89,11 +112,11 @@ def calculate_calendar(workouts, start_workout, start_date, end_date):
             week_count += 1
             current_titles = generate_weekly_workouts(workout_titles, start_workout, week_count)
 
-        e = create_event(current_date, current_titles[current_date.weekday()], location)
-        c.events.append(e)
+        calendar += calendar_event(current_date, current_titles[current_date.weekday()], location)
         current_date += one_day
 
-    return c
+    calendar += calendar_footer()
+    return calendar
 
 
 def print_workouts(workouts):
