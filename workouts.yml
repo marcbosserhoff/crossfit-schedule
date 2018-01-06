@@ -2,27 +2,22 @@
 location: "CrossFit Cologne, Maarweg 132, 50825 Koeln, Germany"
 workouts:
   - contents:
+      - Gymnastics skill/strength
+      - WOD
+  - contents:
       - Oly
       - WOD
   - contents:
       - Intervalle
   - contents:
       - Strength
-      - Oly
       - WOD
       - accessories
   - contents:
-      - Gymnastics skill
-      - Strength
-      - WOD
+      - Long Conditioning
   - contents:
       - Oly
-      - accessories
-  - contents:
-      - Strength
-      - Intervalle
-  - contents:
-      - Gymnastics skill
-      - Strength
       - WOD
+  - contents:
+      - WOD('s)
       - accessories
