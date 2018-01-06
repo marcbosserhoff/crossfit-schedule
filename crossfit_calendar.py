@@ -15,7 +15,7 @@ def calendar_header():
     header += "CALSCALE:GREGORIAN\n"
     header += "METHOD:PUBLISH\n"
     header += "X-WR-CALNAME:CrossFit\n"
-    header += "X-WR-TIMEZONE:Europe / Berlin\n"
+    header += "X-WR-TIMEZONE:Europe/Berlin\n"
     header += "X-WR-CALDESC:Klasseninhalte von CrossFit - Cologne\n"
     return header
 
@@ -29,8 +29,8 @@ def calendar_event(day, title, location):
     current_day_str = day.strftime("%Y%m%d")
     next_day_str = (day + one_day).strftime("%Y%m%d")
     event = "BEGIN:VEVENT\n"
-    event += "DTSTART;VALUE = DATE:%s\n" % current_day_str
-    event += "DTEND;VALUE = DATE:%s\n" % next_day_str
+    event += "DTSTART;VALUE=DATE:%s\n" % current_day_str
+    event += "DTEND;VALUE=DATE:%s\n" % next_day_str
     event += "DTSTAMP:%s\n" % now_str
     event += "CREATED:%s\n" % now_str
     event += "DESCRIPTION:%s\n" % title
